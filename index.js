@@ -9,12 +9,21 @@ const response = require("./response");
 
 app.use(bodyParser.json());
 
-// route Get Data 
+// route Get Data
 app.get("/", (req, res) => {
   const querySql = "select * from mahasiswa";
 
   db.query(querySql, (error, result) => {
     response(200, result, "Get Data From Table Mahasiswa", res);
+  });
+});
+
+app.get("/find", (req, res) => {
+  console.log("find Mahasiswa where NIM", req.query.nim);
+  
+  const sql = `select * from mahasiswa where nim = ${req.query.nim}`;
+  db.query(sql, (error, result) => {
+    response(200, result, "Find NIM mahasiswa", res);
   });
 });
 
