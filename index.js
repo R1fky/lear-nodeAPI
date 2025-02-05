@@ -43,6 +43,25 @@ app.get("/find/:nim", (req, res) => {
   });
 });
 
+// menambahkan data mahasiswa 
+app.post('/add/mahasiswa', (req, res) => {
+  // mengambil data dari body 
+  const {nama_mhs, nim, kelas} = req.body
+  
+  const sql = "insert into mahasiswa (nama_mhs, nim, kelas) values (?, ?, ? )"
+  db.query(sql, [nama_mhs, nim, kelas], (error, result) => {
+    // jika null 
+    if(!nama_mhs, !nim, !kelas) { 
+      return res.status(400).json({message: "Kolom Data tidak Boleh Kosong"})
+    }
+    if(error) {
+      return res.status(500).json({message: "Add Data Failed", error: error.message})
+    }
+    response(200, result, "Add Data Mahasiswa Succes ", res)
+    console.log({requestData: req.body})
+  })
+})
+
 app.post("/login", (req, res) => {
   const username = req.body.username;
   if (username === "Blitz") {
