@@ -18,18 +18,29 @@ app.get("/", (req, res) => {
   });
 });
 
+//find berdasarkan route sama dengan atau opsional
 app.get("/find", (req, res) => {
   console.log("find Mahasiswa where NIM", req.query.nim);
-  
+
   const sql = `select * from mahasiswa where nim = ${req.query.nim}`;
   db.query(sql, (error, result) => {
     response(200, result, "Find NIM mahasiswa", res);
   });
 });
 
-app.get("/hello", (req, res) => {
-  const name = "rifky";
-  res.send(`Hello world to ${name}`);
+//route spesifik req dari params route
+app.get("/find/:nim", (req, res) => {
+  const sql = `select * from mahasiswa where nim = ?`;
+  db.query(sql, [req.params.nim], (error, result) => {
+    if (error) {
+      return res.status(400).json({ message: "Database Not Found", error: error.message });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Data Not Found" });
+    }
+    response(200, result, "Data Found", res);
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -40,11 +51,6 @@ app.post("/login", (req, res) => {
   } else {
     res.status(400).send("Failde Username salah");
   }
-});
-
-app.put("/login", (req, res) => {
-  console.log({ updateData: req.body });
-  res.send("Update data berhasil");
 });
 
 app.listen(port, () => {
